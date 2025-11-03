@@ -1,5 +1,6 @@
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 import { auth } from "../common/firebase.js";
+import "../common/public-route.js";
 
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
@@ -24,9 +25,6 @@ loginButton.addEventListener("click", (e) => {
   const password = passwordInput.value;
 
   signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      window.location.href = "../inicio/inicio.html";
-    })
     .catch((error) => {
       console.error("Error durante el registro:", error.code, error.message);
       loginErrorMessage.textContent =
