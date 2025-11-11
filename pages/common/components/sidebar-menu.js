@@ -72,7 +72,7 @@ class SidebarMenu extends HTMLElement {
     `;
     this.style.height = "100%";
 
-    // Highlight the active navigation link
+    // Cambiar el color del link activo
     const currentPath = window.location.pathname;
     const navLinks = document.querySelectorAll(".nav-link");
     navLinks.forEach((link) => {
@@ -83,6 +83,7 @@ class SidebarMenu extends HTMLElement {
       }
     });
 
+    // Agregar la lógica de cerrar sesión
     const logoutButton = document.getElementById("logout-button");
     logoutButton.addEventListener("click", () => {
       logoutButton.disable = true;
