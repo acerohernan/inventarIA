@@ -11,12 +11,12 @@ export const productsRef = collection(db, "products");
 export const getProductsByUser = async (userId) => {
   const q = query(productsRef, where("userId", "==", userId));
   try {
-    const querySnapshot = await getDocs(q);
+    // const querySnapshot = await getDocs(q);
 
     const listaDeElementos = [];
-    querySnapshot.forEach((doc) => {
+    /* querySnapshot.forEach((doc) => {
       listaDeElementos.push({ id: doc.id, ...doc.data() });
-    });
+    }); */
 
     console.log(
       `Elementos encontrados para el usuario ${userId}:`,

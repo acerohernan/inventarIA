@@ -21,7 +21,7 @@
       crossorigin="anonymous"
     />
     <link href="productos.css" rel="stylesheet" crossorigin="anonymous" />
-    <title>Porductos</title>
+    <title>Productos</title>
   </head>
   <body>
     <div class="dashboard-container">
@@ -31,14 +31,15 @@
         <h1 class="fw-bold">Productos</h1>
         <!-- Main buttons -->
         <div class="d-flex justify-content-end gap-2">
-          <button
+          <a
             type="button"
             class="btn btn-primary"
             disabled
             id="products-add-button"
+            href="./agregar.html"
           >
             <i class="bi bi-plus fs-5"></i>
-          </button>
+          </a>
           <button
             type="button"
             class="btn btn-outline-secondary"
@@ -59,34 +60,14 @@
             <thead>
               <tr>
                 <th scope="col">Imagen</th>
+                <th scope="col">Nombre</th>
                 <th scope="col">Código</th>
                 <th scope="col">Precio</th>
                 <th scope="col">Cantidad</th>
                 <th scope="col">Acciones</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>Mark</td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-                <td>Mark</td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td colspan="2">Larry the Bird</td>
-                <td>@twitter</td>
-                <td>Mark</td>
-              </tr>
-            </tbody>
+            <tbody></tbody>
           </table>
         </div>
 
