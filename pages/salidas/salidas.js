@@ -63,8 +63,8 @@ function getSalidasCallback(salidas) {
 
       if (Array.isArray(detalles)) {
         detallesTexto = detalles
-          .map((item) => `${item.product} (x${item.quantity})`)
-          .join(", ");
+          .map((item) => `- ${item.quantity} ${item.product}`)
+          .join("<br>");
       }
     } catch (e) {
       detallesTexto = salida.details || "-";
@@ -82,7 +82,7 @@ function getSalidasCallback(salidas) {
     row.innerHTML = `
       <td>${fechaTexto}</td>
       <td>$${salida.amount || "0"}</td>
-      <td>${detallesTexto}</td>
+      <td style="white-space: pre-wrap; min-width: 250px; word-wrap: break-word; overflow-wrap: break-word;">${detallesTexto}</td>
       <td>
       <div class="d-flex align-items-center justify-content-center gap-2">
         <button class="btn btn-sm btn-outline-primary" title="Editar">
@@ -115,8 +115,8 @@ function downloadSalidasExcel(salidas) {
 
       if (Array.isArray(detalles)) {
         detallesTexto = detalles
-          .map((item) => `${item.product} (x${item.quantity})`)
-          .join(", ");
+          .map((item) => `- ${item.quantity} ${item.product}`)
+          .join("\n");
       }
     } catch (e) {
       detallesTexto = salida.details || "-";
