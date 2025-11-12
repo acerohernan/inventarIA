@@ -43,11 +43,6 @@ function getProductsCallback(products) {
   products.forEach((product) => {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td>
-        <img src="${
-          product.imageUrl || ""
-        }" alt="Producto" width="40" height="40" style="object-fit: cover; border-radius: 4px;">
-      </td>
       <td>${product.name || "-"}</td>
       <td>${product.code || "-"}</td>
       <td>$${product.price || "0"}</td>

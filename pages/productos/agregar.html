@@ -28,12 +28,71 @@
       <sidebar-menu></sidebar-menu>
       <!-- Main content -->
       <main class="dashboard-content">
-        <h1 class="fw-bold">Agregar Producto</h1>
-        <div class="d-flex w-100 gap-2">
-          <a class="btn btn-outline-secondary w-100" href="./productos.html"
-            >Cancelar</a
-          >
-          <button class="btn btn-primary w-100">Guardar</button>
+        <div class="h-100 d-flex flex-column">
+          <h1 class="fw-bold">Agregar Producto</h1>
+          <div style="flex: 1">
+            <form
+              id="product-form"
+              class="d-flex flex-column gap-3 h-100"
+              novalidate
+            >
+              <div class="mb-1">
+                <label for="product-name" class="form-label">Nombre</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="product-name"
+                  name="product-name"
+                  required
+                />
+              </div>
+              <div class="mb-1">
+                <label for="product-price" class="form-label">Precio</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="product-price"
+                  name="product-price"
+                  step="0.01"
+                  required
+                />
+              </div>
+              <div class="mb-1">
+                <label for="product-code" class="form-label">Código</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="product-code"
+                  name="product-code"
+                  required
+                />
+              </div>
+              <div class="mb-1">
+                <label for="product-quantity" class="form-label"
+                  >Cantidad</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="product-quantity"
+                  name="product-quantity"
+                  required
+                />
+              </div>
+            </form>
+          </div>
+          <div class="d-flex w-100 gap-2">
+            <a class="btn btn-outline-secondary w-100" href="./productos.html"
+              >Cancelar</a
+            >
+            <button
+              type="submit"
+              form="product-form"
+              class="btn btn-primary w-100"
+            >
+              Guardar
+            </button>
+          </div>
         </div>
       </main>
       <!-- Main content -->
@@ -47,6 +106,6 @@
     ></script>
 
     <!-- Custom script -->
-    <script src="productos.js" type="module"></script>
+    <script src="agregar.js" type="module"></script>
   </body>
 </html>
