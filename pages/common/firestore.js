@@ -8,6 +8,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
 export const productsRef = collection(db, "products");
+export const salidasRef = collection(db, "salidas");
 
 export const getProductsByUser = async (userId) => {
   const q = query(productsRef, where("userId", "==", userId));
@@ -46,5 +47,25 @@ export const saveProduct = async (productData) => {
   } catch (error) {
     console.error("Error al guardar el producto:", error);
     throw error;
+  }
+};
+
+export const getSalidasByUser = async (userId) => {
+  const q = query(salidasRef, where("userId", "==", userId));
+  try {
+    const querySnapshot = await getDocs(q);
+
+    const listaDeElementos = [];
+    querySnapshot.forEach((doc) => {
+      listaDeElementos.push({ id: doc.id, ...doc.data() });
+    });
+
+    console.log(
+      `Salidas encontradas para el usuario ${userId}:`,
+      listaDeElementos
+    );
+    return listaDeElementos;
+  } catch (error) {
+    console.error("Error al obtener salidas: ", error);
   }
 };
