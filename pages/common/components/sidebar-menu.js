@@ -26,7 +26,7 @@ class SidebarMenu extends HTMLElement {
               href="/pages/inicio/inicio.html"
               class="nav-link py-3 border-bottom"
               id="nav-link-inicio"
-              aria-current="page"
+              data-section="inicio"
             >
               <i class="bi bi-house-door fs-4"></i>
             </a>
@@ -36,6 +36,7 @@ class SidebarMenu extends HTMLElement {
               href="/pages/productos/productos.html"
               class="nav-link py-3 border-bottom"
               id="nav-link-products"
+              data-section="productos"
             >
               <i class="bi bi-grid fs-4"></i>
             </a>
@@ -45,6 +46,7 @@ class SidebarMenu extends HTMLElement {
               href="/pages/salidas/salidas.html"
               class="nav-link py-3 border-bottom"
               id="nav-link-products"
+              data-section="salidas"
             >
               <i class="bi bi-box-arrow-right fs-4"></i>
             </a>
@@ -85,8 +87,10 @@ class SidebarMenu extends HTMLElement {
     const currentPath = window.location.pathname;
     const navLinks = document.querySelectorAll(".nav-link");
     navLinks.forEach((link) => {
-      if (link.getAttribute("href") === currentPath) {
-        link.classList.add("active");
+      const section = link.dataset.section;
+      // Verifica si la ruta contiene la carpeta
+      if (currentPath.includes(`/pages/${section}/`)) {
+        link.classList.add("active"); // aplicar estilo sombreado
       } else {
         link.classList.remove("active");
       }
