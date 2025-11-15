@@ -44,6 +44,20 @@ function getSalidasCallback(salidas) {
     return;
   }
 
+  salidas = salidas.sort((a, b) => {
+    const dateA = a.date
+      ? a.date.toDate
+        ? a.date.toDate()
+        : new Date(a.date)
+      : new Date(0);
+    const dateB = b.date
+      ? b.date.toDate
+        ? b.date.toDate()
+        : new Date(b.date)
+      : new Date(0);
+    return dateA - dateB;
+  });
+
   // Guardar las salidas para usar en la descarga
   currentSalidas = salidas;
 
