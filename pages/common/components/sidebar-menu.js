@@ -61,7 +61,7 @@ class SidebarMenu extends HTMLElement {
             aria-expanded="false"
           >
             <img
-              src="https://github.com/mdo.png"
+              src="../../images/user-placeholder.svg"
               alt="mdo"
               width="24"
               height="24"
