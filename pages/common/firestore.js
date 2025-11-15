@@ -5,6 +5,8 @@ import {
   where,
   getDocs,
   addDoc,
+  updateDoc,
+  doc,
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
 export const productsRef = collection(db, "products");
@@ -97,6 +99,29 @@ export const saveSalida = async (salidasData) => {
     return docRef.id;
   } catch (error) {
     console.error("Error al guardar la salida:", error);
+    throw error;
+  }
+};
+
+export const updateProductQuantities = async (products) => {
+  try {
+    // Actualizar la cantidad de cada producto
+    await Promise.all(
+      products
+        .filter((p) => p.quantity > 0) // Solo actualizar productos con cantidad > 0
+        .map((p) =>
+          updateDoc(doc(db, "products", p.id), {
+            quantity: Math.max(
+              0,
+              (p.originalQuantity || p.quantity) - p.quantity
+            ),
+          })
+        )
+    );
+
+    console.log("Cantidades de productos actualizadas");
+  } catch (error) {
+    console.error("Error al actualizar cantidades de productos:", error);
     throw error;
   }
 };
