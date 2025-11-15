@@ -69,3 +69,34 @@ export const getSalidasByUser = async (userId) => {
     console.error("Error al obtener salidas: ", error);
   }
 };
+
+export const saveSalida = async (salidasData) => {
+  try {
+    // Calcular el monto total (suma de precios * cantidades)
+    let amount = 0;
+    const details = salidasData.products
+      .filter((p) => p.quantity > 0)
+      .map((p) => {
+        amount += p.price * p.quantity;
+        return {
+          product: p.name,
+          quantity: p.quantity,
+        };
+      });
+
+    // Guardar documento en Firestore
+    const docRef = await addDoc(salidasRef, {
+      amount,
+      date: new Date(),
+      details: JSON.stringify(details),
+      userId: salidasData.userId,
+      createdAt: new Date(),
+    });
+
+    console.log("Salida guardada con ID:", docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error al guardar la salida:", error);
+    throw error;
+  }
+};

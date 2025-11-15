@@ -1,6 +1,6 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 import { auth } from "../common/firebase.js";
-import { getProductsByUser } from "../common/firestore.js";
+import { getProductsByUser, saveSalida } from "../common/firestore.js";
 import "../common/private-route.js";
 import "../common/components/index.js";
 
@@ -9,14 +9,20 @@ const productsListContainer = document.getElementById(
   "products-list-container"
 );
 const productQuantityList = document.getElementById("product-quantity-list");
+const guardarButton = document.querySelector("button[type='submit']");
+
+let currentUser = null;
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) return;
 
+  currentUser = user;
   loadingMessage.style.display = "flex";
 
   getProductsByUser(user.uid)
     .then((products) => {
+      productsData = products;
+
       // If component exists, pass products to it
       if (productQuantityList) {
         productQuantityList.products = products;
@@ -24,7 +30,6 @@ onAuthStateChanged(auth, async (user) => {
 
         // Listen for quantity changes
         productQuantityList.addEventListener("quantity-change", (e) => {
-          // console.log("Quantity changed:", e.detail);
           // e.detail -> { productId, quantity }
           // TODO: use this event to build the salida details when saving
         });
@@ -36,6 +41,47 @@ onAuthStateChanged(auth, async (user) => {
     .finally(() => {
       loadingMessage.style.display = "none";
     });
+});
+
+guardarButton.addEventListener("click", async (e) => {
+  e.preventDefault();
+
+  if (!currentUser) {
+    alert("No hay usuario autenticado");
+    return;
+  }
+
+  // Obtener las cantidades del componente
+  const productsWithQuantity = productQuantityList.products.filter(
+    (p) => p.quantity > 0
+  );
+
+  if (productsWithQuantity.length === 0) {
+    alert("Por favor selecciona al menos un producto con cantidad mayor a 0");
+    return;
+  }
+
+  guardarButton.disabled = true;
+  guardarButton.innerHTML =
+    '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
+
+  try {
+    await saveSalida({
+      products: productsWithQuantity,
+      userId: currentUser.uid,
+    });
+
+    alert("Salida guardada exitosamente");
+
+    // Redirigir a salidas
+    window.location.href = "./salidas.html";
+  } catch (error) {
+    console.error("Error al guardar la salida:", error);
+    alert("Error al guardar la salida: " + error.message);
+  } finally {
+    guardarButton.disabled = false;
+    guardarButton.innerHTML = "Guardar";
+  }
 });
 
 function getProductsCallback(products) {

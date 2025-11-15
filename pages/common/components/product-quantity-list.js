@@ -2,16 +2,26 @@ class ProductQuantityList extends HTMLElement {
   constructor() {
     super();
     this._products = [];
+    this._quantities = {}; // Almacena cantidades de salida por producto (inicialmente 0)
     this.attachShadow({ mode: "open" });
   }
 
   set products(value) {
     this._products = Array.isArray(value) ? value : [];
+    // Inicializar cantidades en 0 para cada producto
+    this._quantities = {};
+    this._products.forEach((p) => {
+      this._quantities[p.id] = 0;
+    });
     this.render();
   }
 
   get products() {
-    return this._products;
+    // Retornar productos con sus cantidades de salida
+    return this._products.map((p) => ({
+      ...p,
+      quantity: this._quantities[p.id] || 0,
+    }));
   }
 
   connectedCallback() {
@@ -78,20 +88,18 @@ class ProductQuantityList extends HTMLElement {
     const itemsHtml =
       this._products
         .map((p) => {
-          const qty = typeof p.quantity === "number" ? p.quantity : 0;
-          // Using data attributes to reference product id on actions
+          const salida = this._quantities[p.id] || 0;
           return `
           <div class="card" data-id="${p.id || ""}">
             <div class="left">
               <div class="name">${this._escapeHtml(p.name || "Untitled")}</div>
               <div class="meta">Código: ${this._escapeHtml(
                 p.code || "-"
-              )} &nbsp; Cantidad: <span id="quantityCounter">${qty}</span></div>
-              
+              )} &nbsp; Stock: ${p.quantity || 0}</div>
             </div>
             <div class="controls">
-              <button class="decrease" disabled title="Restar">-</button>
-              <div class="count">0</div>
+              <button class="decrease" title="Restar">-</button>
+              <div class="count">${salida}</div>
               <button class="increase" title="Agregar">+</button>
             </div>
           </div>
@@ -110,44 +118,43 @@ class ProductQuantityList extends HTMLElement {
       const incBtn = card.querySelector(".increase");
       const decBtn = card.querySelector(".decrease");
       const countEl = card.querySelector(".count");
-      const quantityCounter = card.querySelector("#quantityCounter");
+
+      // Obtener el stock máximo del producto
+      const product = this._products.find((p) => p.id === id);
+      const maxStock = product?.quantity || 0;
+      const current = this._quantities[id] || 0;
+
+      // Establecer estado inicial de botones
+      this._updateButtonStates(decBtn, incBtn, current, maxStock);
 
       incBtn.addEventListener("click", () => {
-        decBtn.disabled = false;
-
         const current = parseInt(countEl.textContent, 10) || 0;
-        const currentQty = parseInt(quantityCounter.textContent, 10) || 0;
-
-        const next = Math.min(current + 1, currentQty);
-
-        if (next === currentQty) incBtn.disabled = true;
-        else incBtn.disabled = false;
-
+        const next = Math.min(current + 1, maxStock);
         countEl.textContent = next;
+        this._quantities[id] = next;
+        this._updateButtonStates(decBtn, incBtn, next, maxStock);
         this._emitChange(id, next);
       });
 
       decBtn.addEventListener("click", () => {
         const current = parseInt(countEl.textContent, 10) || 0;
-        incBtn.disabled = false;
-
         const next = Math.max(0, current - 1);
-
-        if (next === 0) decBtn.disabled = true;
-        else decBtn.disabled = false;
-
         countEl.textContent = next;
+        this._quantities[id] = next;
+        this._updateButtonStates(decBtn, incBtn, next, maxStock);
         this._emitChange(id, next);
       });
     });
   }
 
-  _emitChange(productId, newQuantity) {
-    const idx = this._products.findIndex((p) => p.id === productId);
-    if (idx >= 0) {
-      this._products[idx].quantity = newQuantity;
-    }
+  _updateButtonStates(decBtn, incBtn, current, maxStock) {
+    // Deshabilitar decrecer si es 0
+    decBtn.disabled = current === 0;
+    // Deshabilitar agregar si alcanza el stock máximo
+    incBtn.disabled = current >= maxStock;
+  }
 
+  _emitChange(productId, newQuantity) {
     this.dispatchEvent(
       new CustomEvent("quantity-change", {
         detail: { productId, quantity: newQuantity },
