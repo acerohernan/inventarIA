@@ -96,17 +96,7 @@ function getSalidasCallback(salidas) {
     row.innerHTML = `
       <td>${fechaTexto}</td>
       <td>$${salida.amount || "0"}</td>
-      <td style="white-space: pre-wrap; min-width: 250px; word-wrap: break-word; overflow-wrap: break-word;">${detallesTexto}</td>
-      <td>
-      <div class="d-flex align-items-center justify-content-center gap-2">
-        <button class="btn btn-sm btn-outline-primary" title="Editar">
-          <i class="bi bi-pencil"></i>
-        </button>
-        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
-          <i class="bi bi-trash"></i>
-        </button>
-        </div>
-      </td>
+      <td style="white-space: pre-wrap; min-width: 200px; word-wrap: break-word; overflow-wrap: break-word;">${detallesTexto}</td>
     `;
     tbody.appendChild(row);
   });

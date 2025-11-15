@@ -28,19 +28,10 @@ onAuthStateChanged(auth, async (user) => {
     .then((products) => {
       productsData = products;
 
-      // If component exists, pass products to it
+      // mostrar el componente
       if (productQuantityList) {
         productQuantityList.products = products;
         productsListContainer.style.display = "block";
-
-        // Listen for quantity changes
-        productQuantityList.addEventListener("quantity-change", (e) => {
-          // e.detail -> { productId, quantity }
-          // TODO: use this event to build the salida details when saving
-        });
-      } else {
-        // Fallback: use old table rendering
-        getProductsCallback(products);
       }
     })
     .finally(() => {
