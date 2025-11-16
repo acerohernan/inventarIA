@@ -8,16 +8,30 @@ const totalProductsElement = document.getElementById("total-products");
 const totalSalidasElement = document.getElementById("total-salidas");
 const totalEntradasElement = document.getElementById("total-entradas");
 
+const loadingMessage = document.getElementById("loading-message");
+const statisticsCards = document.getElementById("statistics-cards");
+
 onAuthStateChanged(auth, async (user) => {
   if (!user) return;
+
+  // show loader
+  if (loadingMessage) loadingMessage.style.display = "flex";
+  if (statisticsCards) statisticsCards.style.display = "none";
 
   try {
     const statistics = await getOrCreateStatistics(user.uid);
 
-    totalProductsElement.textContent = statistics.totalProducts || 0;
-    totalSalidasElement.textContent = statistics.totalSalidas || 0;
-    totalEntradasElement.textContent = statistics.totalEntradas || 0;
+    if (totalProductsElement)
+      totalProductsElement.textContent = statistics.totalProducts || 0;
+    if (totalSalidasElement)
+      totalSalidasElement.textContent = statistics.totalSalidas || 0;
+    if (totalEntradasElement)
+      totalEntradasElement.textContent = statistics.totalEntradas || 0;
   } catch (error) {
     console.error("Error al cargar estadísticas:", error);
+  } finally {
+    // hide loader and show cards
+    if (loadingMessage) loadingMessage.style.display = "none";
+    if (statisticsCards) statisticsCards.style.display = "block";
   }
 });
