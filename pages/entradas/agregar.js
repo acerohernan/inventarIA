@@ -2,8 +2,8 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/fi
 import { auth } from "../common/firebase.js";
 import {
   getProductsByUser,
-  saveSalida,
-  updateProductQuantities,
+  saveEntrada,
+  updateProductQuantitiesAdd,
 } from "../common/firestore.js";
 import "../common/private-route.js";
 import "../common/components/index.js";
@@ -31,6 +31,8 @@ onAuthStateChanged(auth, async (user) => {
       // mostrar el componente
       if (productQuantityList) {
         productQuantityList.products = products;
+        // Establecer que no hay límite de stock para entradas
+        productQuantityList.hasStockLimit = false;
         productsListContainer.style.display = "block";
       }
     })
@@ -62,13 +64,13 @@ guardarButton.addEventListener("click", async (e) => {
     '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
 
   try {
-    await saveSalida({
+    await saveEntrada({
       products: productsWithQuantity,
       userId: currentUser.uid,
     });
 
-    // Actualizar las cantidades de los productos después de guardar la salida
-    await updateProductQuantities(
+    // Actualizar las cantidades de los productos después de guardar la entrada
+    await updateProductQuantitiesAdd(
       productsWithQuantity.map((p) => ({
         ...p,
         originalQuantity:
@@ -76,13 +78,13 @@ guardarButton.addEventListener("click", async (e) => {
       }))
     );
 
-    alert("Salida guardada exitosamente");
+    alert("Entrada guardada exitosamente");
 
-    // Redirigir a salidas
-    window.location.href = "./salidas.html";
+    // Redirigir a entradas
+    window.location.href = "./entradas.html";
   } catch (error) {
-    console.error("Error al guardar la salida:", error);
-    alert("Error al guardar la salida: " + error.message);
+    console.error("Error al guardar la entrada:", error);
+    alert("Error al guardar la entrada: " + error.message);
   } finally {
     guardarButton.disabled = false;
     guardarButton.innerHTML = "Guardar";

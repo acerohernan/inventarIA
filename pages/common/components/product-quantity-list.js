@@ -3,6 +3,7 @@ class ProductQuantityList extends HTMLElement {
     super();
     this._products = [];
     this._quantities = {}; // Almacena cantidades de salida por producto (inicialmente 0)
+    this._hasStockLimit = true; // Por defecto hay límite de stock
     this.attachShadow({ mode: "open" });
   }
 
@@ -24,7 +25,19 @@ class ProductQuantityList extends HTMLElement {
     }));
   }
 
+  set hasStockLimit(value) {
+    this._hasStockLimit = value;
+  }
+
+  get hasStockLimit() {
+    return this._hasStockLimit;
+  }
+
   connectedCallback() {
+    // Leer atributo hasStockLimit si existe
+    if (this.hasAttribute("no-stock-limit")) {
+      this._hasStockLimit = false;
+    }
     this.render();
   }
 
@@ -149,8 +162,8 @@ class ProductQuantityList extends HTMLElement {
   _updateButtonStates(decBtn, incBtn, current, maxStock) {
     // Deshabilitar decrecer si es 0
     decBtn.disabled = current === 0;
-    // Deshabilitar agregar si alcanza el stock máximo
-    incBtn.disabled = current >= maxStock;
+    // Deshabilitar agregar si tiene límite y alcanza el stock máximo
+    incBtn.disabled = this._hasStockLimit && current >= maxStock;
   }
 
   _emitChange(productId, newQuantity) {

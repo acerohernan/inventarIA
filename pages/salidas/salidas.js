@@ -133,8 +133,8 @@ function downloadSalidasExcel(salidas) {
 
       if (Array.isArray(detalles)) {
         detallesTexto = detalles
-          .map((item) => `- ${item.quantity} ${item.product}`)
-          .join("\n");
+          .map((item) => `${item.quantity} de ${item.product}`)
+          .join(", ");
       }
     } catch (e) {
       detallesTexto = salida.details || "-";
