@@ -4,6 +4,7 @@ import {
   getProductsByUser,
   saveSalida,
   updateProductQuantities,
+  incrementStatistic,
 } from "../common/firestore.js";
 import "../common/private-route.js";
 import "../common/components/index.js";
@@ -75,6 +76,9 @@ guardarButton.addEventListener("click", async (e) => {
           productsData.find((pd) => pd.id === p.id)?.quantity || 0,
       }))
     );
+
+    // Incrementar estadística de salidas
+    await incrementStatistic(currentUser.uid, "totalSalidas");
 
     alert("Salida guardada exitosamente");
 

@@ -28,7 +28,65 @@
       <sidebar-menu></sidebar-menu>
       <!-- Main content -->
       <main class="dashboard-content">
-        <h1 class="fw-bold">Inicio</h1>
+        <h1 class="fw-bold mb-5">Inicio</h1>
+
+        <!-- Statistics Cards -->
+        <div class="row g-4">
+          <!-- Total Productos -->
+          <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body text-center">
+                <div class="mb-3">
+                  <i
+                    class="bi bi-box-seam text-primary"
+                    style="font-size: 2rem"
+                  ></i>
+                </div>
+                <h6 class="card-title text-muted mb-3">Total Productos</h6>
+                <div class="display-4 fw-bold text-primary" id="total-products">
+                  0
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Total Salidas -->
+          <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body text-center">
+                <div class="mb-3">
+                  <i
+                    class="bi bi-arrow-up-right text-success"
+                    style="font-size: 2rem"
+                  ></i>
+                </div>
+                <h6 class="card-title text-muted mb-3">Total Salidas</h6>
+                <div class="display-4 fw-bold text-success" id="total-salidas">
+                  0
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Total Entradas -->
+          <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body text-center">
+                <div class="mb-3">
+                  <i
+                    class="bi bi-arrow-down-left text-info"
+                    style="font-size: 2rem"
+                  ></i>
+                </div>
+                <h6 class="card-title text-muted mb-3">Total Entradas</h6>
+                <div class="display-4 fw-bold text-info" id="total-entradas">
+                  0
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Statistics Cards -->
       </main>
       <!-- Main content -->
     </div>

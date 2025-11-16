@@ -197,3 +197,51 @@ export const updateProductQuantitiesAdd = async (products) => {
     throw error;
   }
 };
+
+export const getOrCreateStatistics = async (userId) => {
+  try {
+    const statisticsRef = collection(db, "statistics");
+    const q = query(statisticsRef, where("userId", "==", userId));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const doc_data = querySnapshot.docs[0];
+      return { id: doc_data.id, ...doc_data.data() };
+    } else {
+      // Crear documento de estadísticas si no existe
+      const docRef = await addDoc(statisticsRef, {
+        userId,
+        totalProducts: 0,
+        totalSalidas: 0,
+        totalEntradas: 0,
+        createdAt: new Date(),
+      });
+      return {
+        id: docRef.id,
+        userId,
+        totalProducts: 0,
+        totalSalidas: 0,
+        totalEntradas: 0,
+      };
+    }
+  } catch (error) {
+    console.error("Error al obtener/crear estadísticas:", error);
+    throw error;
+  }
+};
+
+export const incrementStatistic = async (userId, field) => {
+  try {
+    const statistics = await getOrCreateStatistics(userId);
+    const statisticsRef = doc(db, "statistics", statistics.id);
+
+    await updateDoc(statisticsRef, {
+      [field]: (statistics[field] || 0) + 1,
+    });
+
+    console.log(`Estadística ${field} incrementada`);
+  } catch (error) {
+    console.error(`Error al incrementar estadística ${field}:`, error);
+    throw error;
+  }
+};

@@ -4,6 +4,7 @@ import {
   getProductsByUser,
   saveEntrada,
   updateProductQuantitiesAdd,
+  incrementStatistic,
 } from "../common/firestore.js";
 import "../common/private-route.js";
 import "../common/components/index.js";
@@ -77,6 +78,9 @@ guardarButton.addEventListener("click", async (e) => {
           productsData.find((pd) => pd.id === p.id)?.quantity || 0,
       }))
     );
+
+    // Incrementar estadística de entradas
+    await incrementStatistic(currentUser.uid, "totalEntradas");
 
     alert("Entrada guardada exitosamente");
 
