@@ -11,6 +11,7 @@ import {
 
 export const productsRef = collection(db, "products");
 export const salidasRef = collection(db, "salidas");
+export const entradasRef = collection(db, "entradas");
 
 export const getProductsByUser = async (userId) => {
   const q = query(productsRef, where("userId", "==", userId));
@@ -123,5 +124,25 @@ export const updateProductQuantities = async (products) => {
   } catch (error) {
     console.error("Error al actualizar cantidades de productos:", error);
     throw error;
+  }
+};
+
+export const getEntradasByUser = async (userId) => {
+  const q = query(entradasRef, where("userId", "==", userId));
+  try {
+    const querySnapshot = await getDocs(q);
+
+    const listaDeElementos = [];
+    querySnapshot.forEach((doc) => {
+      listaDeElementos.push({ id: doc.id, ...doc.data() });
+    });
+
+    console.log(
+      `Entradas encontradas para el usuario ${userId}:`,
+      listaDeElementos
+    );
+    return listaDeElementos;
+  } catch (error) {
+    console.error("Error al obtener entradas: ", error);
   }
 };

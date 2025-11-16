@@ -51,6 +51,16 @@ class SidebarMenu extends HTMLElement {
               <i class="bi bi-box-arrow-right fs-4"></i>
             </a>
           </li>
+          <li class="nav-item">
+            <a
+              href="/pages/entradas/entradas.html"
+              class="nav-link py-3 border-bottom"
+              id="nav-link-products"
+              data-section="entradas"
+            >
+              <i class="bi bi-box-arrow-left fs-4"></i>
+            </a>
+          </li>
         </ul>
         <div class="dropdown border-top">
           <a

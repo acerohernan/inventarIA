@@ -93,9 +93,8 @@ class ProductQuantityList extends HTMLElement {
           <div class="card" data-id="${p.id || ""}">
             <div class="left">
               <div class="name">${this._escapeHtml(p.name || "Untitled")}</div>
-              <div class="meta">Código: ${this._escapeHtml(
-                p.code || "-"
-              )} &nbsp; Stock: ${p.quantity || 0}</div>
+              <div class="meta">Código: ${this._escapeHtml(p.code || "-")}</div>
+              <div class="meta">Stock: ${p.quantity || 0}</div>
             </div>
             <div class="controls">
               <button class="decrease" title="Restar">-</button>
