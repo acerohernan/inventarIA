@@ -32,6 +32,6 @@ onAuthStateChanged(auth, async (user) => {
   } finally {
     // hide loader and show cards
     if (loadingMessage) loadingMessage.style.display = "none";
-    if (statisticsCards) statisticsCards.style.display = "block";
+    if (statisticsCards) statisticsCards.style.display = "flex";
   }
 });

@@ -23,6 +23,7 @@
       crossorigin="anonymous"
     />
     <link href="inicio.css" rel="stylesheet" crossorigin="anonymous" />
+    <!-- Use Bootstrap grid classes for responsive layout -->
     <title>InventarIA - Inicio</title>
   </head>
   <body>
@@ -44,8 +45,8 @@
         <!-- Statistics Cards -->
         <div class="row g-4" id="statistics-cards" style="display: none">
           <!-- Total Productos -->
-          <div class="">
-            <div class="card border-0 shadow-sm h-100">
+          <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm h-100 py-md-5">
               <div class="card-body text-center">
                 <div class="mb-3">
                   <i
@@ -54,7 +55,7 @@
                   ></i>
                 </div>
                 <h6 class="card-title text-muted mb-3">Total Productos</h6>
-                <div class="display-4 fw-bold text-primary" id="total-products">
+                <div class="display-3 fw-bold text-primary" id="total-products">
                   0
                 </div>
               </div>
@@ -62,8 +63,8 @@
           </div>
 
           <!-- Total Salidas -->
-          <div class="">
-            <div class="card border-0 shadow-sm h-100">
+          <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm h-100 py-md-5">
               <div class="card-body text-center">
                 <div class="mb-3">
                   <i
@@ -72,7 +73,7 @@
                   ></i>
                 </div>
                 <h6 class="card-title text-muted mb-3">Total Salidas</h6>
-                <div class="display-4 fw-bold text-success" id="total-salidas">
+                <div class="display-3 fw-bold text-success" id="total-salidas">
                   0
                 </div>
               </div>
@@ -80,8 +81,8 @@
           </div>
 
           <!-- Total Entradas -->
-          <div class="">
-            <div class="card border-0 shadow-sm h-100">
+          <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm h-100 py-md-5">
               <div class="card-body text-center">
                 <div class="mb-3">
                   <i
@@ -90,7 +91,7 @@
                   ></i>
                 </div>
                 <h6 class="card-title text-muted mb-3">Total Entradas</h6>
-                <div class="display-4 fw-bold text-info" id="total-entradas">
+                <div class="display-3 fw-bold text-info" id="total-entradas">
                   0
                 </div>
               </div>

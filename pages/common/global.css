@@ -19,14 +19,12 @@ body {
 
 .main-container {
     width: 100%;
-    max-width: 412px;
     height: 100dvh;
     position: relative;
 }
 
 .dashboard-container {
     width: 100%;
-    max-width: 412px;
     height: 100dvh;
     position: relative;
     display: flex;
