@@ -24,41 +24,45 @@ class SidebarMenu extends HTMLElement {
           <li class="nav-item">
             <a
               href="/pages/inicio/inicio.html"
-              class="nav-link py-3 border-bottom"
+              class="nav-link py-3 border-bottom d-flex align-items-center justify-content-center justify-content-md-start px-3"
               id="nav-link-inicio"
               data-section="inicio"
             >
               <i class="bi bi-house-door fs-4"></i>
+              <span class="ms-2 d-none d-md-inline">Inicio</span>
             </a>
           </li>
           <li class="nav-item">
             <a
               href="/pages/productos/productos.html"
-              class="nav-link py-3 border-bottom"
+              class="nav-link py-3 border-bottom d-flex align-items-center justify-content-center justify-content-md-start px-3"
               id="nav-link-products"
               data-section="productos"
             >
               <i class="bi bi-grid fs-4"></i>
+              <span class="ms-2 d-none d-md-inline">Productos</span>
             </a>
           </li>
           <li class="nav-item">
             <a
               href="/pages/salidas/salidas.html"
-              class="nav-link py-3 border-bottom"
-              id="nav-link-products"
+              class="nav-link py-3 border-bottom d-flex align-items-center justify-content-center justify-content-md-start px-3"
+              id="nav-link-salidas"
               data-section="salidas"
             >
               <i class="bi bi-box-arrow-right fs-4"></i>
+              <span class="ms-2 d-none d-md-inline">Salidas</span>
             </a>
           </li>
           <li class="nav-item">
             <a
               href="/pages/entradas/entradas.html"
-              class="nav-link py-3 border-bottom"
-              id="nav-link-products"
+              class="nav-link py-3 border-bottom d-flex align-items-center justify-content-center justify-content-md-start px-3"
+              id="nav-link-entradas"
               data-section="entradas"
             >
               <i class="bi bi-box-arrow-left fs-4"></i>
+              <span class="ms-2 d-none d-md-inline">Entradas</span>
             </a>
           </li>
         </ul>
