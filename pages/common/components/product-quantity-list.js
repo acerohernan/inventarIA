@@ -47,9 +47,14 @@ class ProductQuantityList extends HTMLElement {
         display: block;
       }
       .list {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: 1fr;
         gap: 12px;
+      }
+      @media (min-width: 768px) {
+        .list {
+          grid-template-columns: repeat(2, 1fr);
+        }
       }
       .card {
         border: 1px solid #e6e6e6;
