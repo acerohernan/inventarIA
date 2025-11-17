@@ -57,16 +57,6 @@ function getProductsCallback(products) {
       <td>${product.code || "-"}</td>
       <td>$${product.price || "0"}</td>
       <td>${product.quantity || "0"}</td>
-      <td>
-      <div class="d-flex align-items-center justify-content-center gap-2">
-        <button class="btn btn-sm btn-outline-primary" title="Editar">
-          <i class="bi bi-pencil"></i>
-        </button>
-        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
-          <i class="bi bi-trash"></i>
-        </button>
-        </div>
-      </td>
     `;
     tbody.appendChild(row);
   });
