@@ -50,7 +50,7 @@ class SidebarMenu extends HTMLElement {
               id="nav-link-salidas"
               data-section="salidas"
             >
-              <i class="bi bi-box-arrow-right fs-4"></i>
+              <i class="bi bi-box-arrow-left fs-4"></i>
               <span class="ms-2 d-none d-md-inline">Salidas</span>
             </a>
           </li>
@@ -61,7 +61,7 @@ class SidebarMenu extends HTMLElement {
               id="nav-link-entradas"
               data-section="entradas"
             >
-              <i class="bi bi-box-arrow-left fs-4"></i>
+              <i class="bi bi-box-arrow-right fs-4"></i>
               <span class="ms-2 d-none d-md-inline">Entradas</span>
             </a>
           </li>
