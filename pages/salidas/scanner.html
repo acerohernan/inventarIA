@@ -24,8 +24,20 @@
     <link href="salidas.css" rel="stylesheet" crossorigin="anonymous" />
     <title>InventarIA - Agregar Salida con Escáner</title>
   </head>
-  <body>
+  <body class="position-relative">
     <div id="scanner-reader"></div>
+
+    <div class="scanner-overlay-container">
+      <div class="scanner-overlay-body"></div>
+      <div class="scanner-overlay-buttons">
+        <a href="../salidas/salidas.html" class="btn btn-outline-secondary">
+          Cancelar
+        </a>
+        <button class="btn btn-primary">
+          Ver resumen
+        </a>
+      </div>
+    </div>
     <!-- Bootstrap Javascript -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
