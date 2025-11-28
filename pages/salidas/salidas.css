@@ -1,0 +1,9 @@
+#scanner-reader {
+    width: 100% !important;
+    max-height: 100dvh !important;
+}
+
+#scanner-reader video {
+    height: 100dvh;
+    object-fit: cover;
+}
