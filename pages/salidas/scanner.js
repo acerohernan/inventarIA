@@ -2,7 +2,12 @@ import "../common/private-route.js";
 import "https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 import { auth } from "../common/firebase.js";
-import { getProductsByUser } from "../common/firestore.js";
+import {
+  getProductsByUser,
+  saveSalida,
+  updateProductQuantities,
+  incrementStatistic,
+} from "../common/firestore.js";
 
 const html5QrCode = new Html5Qrcode("scanner-reader", false);
 
@@ -40,9 +45,13 @@ const showToast = (message, type = "success", delay = 2500) => {
 
 let productsData = [];
 let productsLoaded = false;
+// Scanned items list
+let scannedProducts = [];
+let currentUser = null;
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) return;
+  currentUser = user;
 
   try {
     productsData = (await getProductsByUser(user.uid)) || [];
@@ -58,17 +67,6 @@ let lastDecodedValue = null;
 let lastDecodedTimestamp = 0;
 
 const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-  /*
-  TODO: 
-
-  1. Hacer limpieza del código
-  4. Agregar los productos leidos a una lista de salidas con cantidad 1 por cada código leido
-  7. Al presionar "Ver resumen", mostrar un modal con la lista de productos leidos y sus cantidades
-  5. Permitir enviar la lista de salidas al presionar un botón "Guardar Salida"
-  8. Al presionar "Guardar Salida", guardar la salida en firestore y actualizar las cantidades de los productos
-  9. Detener el scanner al guardar y regresar a la página de salidas
-  */
-
   const code = String(decodedText || "").trim();
   const now = Date.now();
 
@@ -91,19 +89,182 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
 
   const product = productsData.find((p) => String(p.code).trim() === code);
 
-  if (product) {
-    showToast(
-      `Producto encontrado: ${product.name}`.replace(/undefined/g, ""),
-      "success"
-    );
-    // TODO: Add to list of scanned items with quantity=1
-  } else {
+  if (!product) {
     showToast(
       `Producto no encontrado: ${code}`.replace(/undefined/g, ""),
       "danger"
     );
+    return;
   }
+
+  // Add product to scanned list (or increment if already present)
+  addScannedProduct(product);
+  const added = scannedProducts.find(
+    (p) => (p.id || p.code) === (product.id || String(product.code || ""))
+  );
+  const countMsg = added && added.quantity ? ` (x${added.quantity})` : "";
+  showToast(
+    `Producto agregado: ${product.name}${countMsg}`.replace(/undefined/g, ""),
+    "success"
+  );
 };
+
+// Add product to the scannedProducts list. Increment quantity if exists.
+function addScannedProduct(product) {
+  const identifier = product.id || String(product.code || "");
+  const existing = scannedProducts.find((p) => (p.id || p.code) === identifier);
+  if (existing) {
+    existing.quantity = (existing.quantity || 0) + 1;
+  } else {
+    scannedProducts.push({
+      id: product.id || identifier,
+      name: product.name || "",
+      code: product.code || "",
+      quantity: 1,
+      price: product.price || 0,
+    });
+  }
+  updateScannedCountBadge();
+}
+
+// Populate the modal table with scanned products
+function populateSummaryModal() {
+  const tbody = document.getElementById("scan-summary-tbody");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+  if (!scannedProducts || scannedProducts.length === 0) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td colspan=3 class='text-center text-muted'>No hay productos escaneados.</td>`;
+    tbody.appendChild(tr);
+    return;
+  }
+
+  scannedProducts.forEach((p) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${escapeHtml(p.name)}</td>
+      <td>${escapeHtml(String(p.code))}</td>
+      <td>${p.quantity}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Simple text escape to avoid HTML injection in table
+function escapeHtml(text) {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// Register modal button behavior once DOM is loaded
+function registerModalHandlers() {
+  const btnSummary = document.getElementById("btn-summary");
+  const btnSave = document.getElementById("btn-save-salida");
+  const modalEl = document.getElementById("scan-summary-modal");
+  let bsModal = null;
+  if (modalEl) {
+    bsModal = new bootstrap.Modal(modalEl, { backdrop: true });
+  }
+
+  if (btnSummary) {
+    btnSummary.addEventListener("click", () => {
+      populateSummaryModal();
+      if (bsModal) bsModal.show();
+    });
+  }
+
+  if (btnSave) {
+    btnSave.addEventListener("click", async () => {
+      if (!scannedProducts || scannedProducts.length === 0) {
+        showToast("No hay productos para guardar", "warning");
+        return;
+      }
+      if (!currentUser) {
+        showToast("Usuario no autenticado", "danger");
+        return;
+      }
+
+      btnSave.disabled = true;
+      const previousHtml = btnSave.innerHTML;
+      btnSave.innerHTML =
+        '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
+
+      try {
+        // Save the salida to Firestore
+        await saveSalida({
+          products: scannedProducts,
+          userId: currentUser.uid,
+        });
+
+        // Update product quantities in Firestore
+        const productsToUpdate = scannedProducts.map((p) => ({
+          id: p.id,
+          quantity: p.quantity,
+          originalQuantity:
+            productsData.find(
+              (pd) => (pd.id || String(pd.code)) === (p.id || p.code)
+            )?.quantity || 0,
+        }));
+        await updateProductQuantities(productsToUpdate);
+
+        // Increment stats
+        await incrementStatistic(currentUser.uid, "totalSalidas");
+
+        showToast("Salida guardada exitosamente", "success");
+
+        // Stop the scanner and redirect to salidas
+        try {
+          await html5QrCode.stop();
+          await html5QrCode.clear();
+        } catch (stopErr) {
+          console.warn("No se pudo detener el scanner correctamente:", stopErr);
+        }
+
+        // Give a small delay to allow UI cleanup, then redirect
+        setTimeout(() => {
+          window.location.href = "../salidas/salidas.html";
+        }, 500);
+      } catch (error) {
+        console.error("Error al guardar la salida:", error);
+        showToast(
+          "Error al guardar la salida: " +
+            (error && error.message ? error.message : String(error)),
+          "danger"
+        );
+      } finally {
+        btnSave.disabled = false;
+        btnSave.innerHTML = previousHtml;
+      }
+      // Clear current list locally and update badge
+      scannedProducts = [];
+      updateScannedCountBadge();
+      if (bsModal) bsModal.hide();
+    });
+  }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", registerModalHandlers);
+} else {
+  registerModalHandlers();
+}
+
+// Update the small badge that shows how many unique scanned items exist
+function updateScannedCountBadge() {
+  const badge = document.getElementById("scanned-count");
+  if (!badge) return;
+  const count = scannedProducts.length;
+  if (count <= 0) {
+    badge.classList.add("d-none");
+    return;
+  }
+  badge.classList.remove("d-none");
+  badge.textContent = count;
+}
 
 const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 

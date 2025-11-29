@@ -27,7 +27,11 @@
   <body class="position-relative">
     <div id="scanner-reader"></div>
 
-    <div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 2000;"></div>
+    <div
+      id="toast-container"
+      class="toast-container position-fixed top-0 end-0 p-3"
+      style="z-index: 2000"
+    ></div>
 
     <div class="scanner-overlay-container">
       <div class="scanner-overlay-body"></div>
@@ -35,9 +39,71 @@
         <a href="../salidas/salidas.html" class="btn btn-secondary">
           Cancelar
         </a>
-        <button class="btn btn-primary">
+        <!-- Button that will open the modal -->
+        <button
+          id="btn-summary"
+          class="btn btn-primary position-relative"
+          type="button"
+        >
           Ver resumen
-        </a>
+          <span
+            id="scanned-count"
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none"
+            >0</span
+          >
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal resumen de productos escaneados -->
+    <div
+      class="modal fade"
+      id="scan-summary-modal"
+      tabindex="-1"
+      aria-labelledby="scanSummaryLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="scanSummaryLabel">Resumen de Salida</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p class="text-muted">
+              Lista de productos detectados por el escáner:
+            </p>
+            <div class="table-responsive">
+              <table class="table table-sm table-striped mb-0">
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th>Código</th>
+                    <th>Cantidad</th>
+                  </tr>
+                </thead>
+                <tbody id="scan-summary-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cerrar
+            </button>
+            <button id="btn-save-salida" type="button" class="btn btn-primary">
+              Guardar Salida
+            </button>
+          </div>
+        </div>
       </div>
     </div>
     <!-- Bootstrap Javascript -->
