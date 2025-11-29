@@ -9,30 +9,72 @@ import {
   incrementStatistic,
 } from "../common/firestore.js";
 import { showToast } from "../common/utils/toast.js";
-import { playBeep, ensureAudioResume } from "../common/utils/audio.js";
+import { playScannerBeep } from "../common/utils/audio.js";
 
 const html5QrCode = new Html5Qrcode("scanner-reader", false);
 
-// showToast imported from components
-
 let productsData = [];
 let productsLoaded = false;
-// Scanned items list
 let scannedProducts = [];
 let currentUser = null;
+let scannerStarted = false;
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) return;
   currentUser = user;
 
+  showToast("Cargando productos de la base de datos...", "info");
+
+  // Show loader while fetching products
+  showLoader();
+
   try {
     productsData = (await getProductsByUser(user.uid)) || [];
     productsLoaded = true;
+
+    showToast("Productos cargados, iniciando scanner...", "info");
+
+    startScannerIfReady();
   } catch (error) {
     showToast("Error al cargar productos", "danger");
-    productsLoaded = true;
+    productsLoaded = false;
   }
 });
+
+function showLoader() {
+  const el = document.getElementById("scanner-loading");
+  if (el) el.classList.remove("d-none");
+}
+
+function hideLoader() {
+  const el = document.getElementById("scanner-loading");
+  if (el) el.classList.add("d-none");
+}
+
+const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+async function startScannerIfReady() {
+  if (!productsLoaded) return;
+  if (scannerStarted) return;
+  scannerStarted = true;
+  showLoader();
+  try {
+    await html5QrCode.start(
+      { facingMode: "environment" },
+      config,
+      qrCodeSuccessCallback
+    );
+    hideLoader();
+  } catch (err) {
+    console.error("Error starting scanner:", err);
+    showToast(
+      "No se pudo iniciar el scanner: " +
+        (err && err.message ? err.message : String(err)),
+      "danger"
+    );
+    scannerStarted = false;
+  }
+}
 
 // Retain the last decoded value to avoid duplicate rapid toasts
 let lastDecodedValue = null;
@@ -69,19 +111,13 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
     return;
   }
 
-  // Add product to scanned list (or increment if already present)
   addScannedProduct(product);
   const added = scannedProducts.find(
     (p) => (p.id || p.code) === (product.id || String(product.code || ""))
   );
   const countMsg = added && added.quantity ? ` (x${added.quantity})` : "";
-  // Try to resume audio context and play a short beep for user feedback
-  try {
-    ensureAudioResume();
-    playBeep({ frequency: 1200, duration: 0.1, volume: 0.15, type: "sine" });
-  } catch (e) {
-    console.error("No se pudo reproducir el audio:", e);
-  }
+
+  playScannerBeep();
 
   showToast(
     `Producto agregado: ${product.name}${countMsg}`.replace(/undefined/g, ""),
@@ -89,7 +125,7 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
   );
 };
 
-// Add product to the scannedProducts list. Increment quantity if exists.
+// Añadir un producto a la lista de escaneados
 function addScannedProduct(product) {
   const identifier = product.id || String(product.code || "");
   const existing = scannedProducts.find((p) => (p.id || p.code) === identifier);
@@ -107,7 +143,7 @@ function addScannedProduct(product) {
   updateScannedCountBadge();
 }
 
-// Populate the modal table with scanned products
+// Pintar el resumen de productos escaneados en el modal
 function populateSummaryModal() {
   const tbody = document.getElementById("scan-summary-tbody");
   if (!tbody) return;
@@ -122,22 +158,12 @@ function populateSummaryModal() {
   scannedProducts.forEach((p) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${escapeHtml(p.name)}</td>
-      <td>${escapeHtml(String(p.code))}</td>
+      <td>${p.name}</td>
+      <td>${String(p.code)}</td>
       <td>${p.quantity}</td>
     `;
     tbody.appendChild(tr);
   });
-}
-
-// Simple text escape to avoid HTML injection in table
-function escapeHtml(text) {
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
 }
 
 // Register modal button behavior once DOM is loaded
@@ -174,13 +200,11 @@ function registerModalHandlers() {
         '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
 
       try {
-        // Save the salida to Firestore
         await saveSalida({
           products: scannedProducts,
           userId: currentUser.uid,
         });
 
-        // Update product quantities in Firestore
         const productsToUpdate = scannedProducts.map((p) => ({
           id: p.id,
           quantity: p.quantity,
@@ -233,7 +257,7 @@ if (document.readyState === "loading") {
   registerModalHandlers();
 }
 
-// Update the small badge that shows how many unique scanned items exist
+// Actualizar el badge con la cantidad de productos escaneados
 function updateScannedCountBadge() {
   const badge = document.getElementById("scanned-count");
   if (!badge) return;
@@ -245,16 +269,3 @@ function updateScannedCountBadge() {
   badge.classList.remove("d-none");
   badge.textContent = count;
 }
-
-const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-
-html5QrCode
-  .start({ facingMode: "environment" }, config, qrCodeSuccessCallback)
-  .catch((err) => {
-    console.error("Error starting scanner:", err);
-    showToast(
-      "No se pudo iniciar el scanner: " +
-        (err && err.message ? err.message : String(err)),
-      "danger"
-    );
-  });

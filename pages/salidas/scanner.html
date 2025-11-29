@@ -34,7 +34,16 @@
     ></div>
 
     <div class="scanner-overlay-container">
-      <div class="scanner-overlay-body"></div>
+      <div class="scanner-overlay-body">
+        <div
+          id="scanner-loading"
+          class="d-flex align-items-center justify-content-center"
+        >
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+      </div>
       <div class="scanner-overlay-buttons">
         <a href="../salidas/salidas.html" class="btn btn-secondary">
           Cancelar
@@ -56,13 +65,7 @@
     </div>
 
     <!-- Modal resumen de productos escaneados -->
-    <div
-      class="modal fade"
-      id="scan-summary-modal"
-      tabindex="-1"
-      aria-labelledby="scanSummaryLabel"
-      aria-hidden="true"
-    >
+    <div class="modal fade" id="scan-summary-modal">
       <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">

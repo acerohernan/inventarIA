@@ -65,4 +65,11 @@ export async function playBeep({
   }
 }
 
-export default playBeep;
+export const playScannerBeep = async () => {
+  try {
+    ensureAudioResume();
+    playBeep({ frequency: 1200, duration: 0.1, volume: 0.15, type: "sine" });
+  } catch (e) {
+    console.error("No se pudo reproducir el audio:", e);
+  }
+};

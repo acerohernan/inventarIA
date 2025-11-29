@@ -27,6 +27,19 @@
     width: 100%;
 }
 
+#scanner-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+}
+
+#scanner-loading.d-none {
+    display: none !important;
+}
+
 .scanner-overlay-buttons {
     width: 100%;
     display: flex;
