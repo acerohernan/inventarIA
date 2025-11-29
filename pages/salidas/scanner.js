@@ -8,40 +8,11 @@ import {
   updateProductQuantities,
   incrementStatistic,
 } from "../common/firestore.js";
+import { showToast } from "../common/utils/toast.js";
 
 const html5QrCode = new Html5Qrcode("scanner-reader", false);
 
-const toastContainer = document.getElementById("toast-container");
-
-const showToast = (message, type = "success", delay = 2500) => {
-  if (!toastContainer) return;
-  const toastEl = document.createElement("div");
-  const bgClass =
-    type === "success"
-      ? "bg-success text-white"
-      : type === "danger"
-      ? "bg-danger text-white"
-      : "bg-warning text-dark";
-  toastEl.className = `toast align-items-center ${bgClass} border-0 my-2`;
-  toastEl.setAttribute("role", "alert");
-  toastEl.setAttribute("aria-live", "assertive");
-  toastEl.setAttribute("aria-atomic", "true");
-  toastEl.innerHTML = `
-    <div class="d-flex">
-      <div class="toast-body">${message}</div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-  `;
-
-  toastContainer.appendChild(toastEl);
-
-  const bsToast = new bootstrap.Toast(toastEl, { delay, autohide: true });
-  bsToast.show();
-
-  toastEl.addEventListener("hidden.bs.toast", () => {
-    toastEl.remove();
-  });
-};
+// showToast imported from components
 
 let productsData = [];
 let productsLoaded = false;
