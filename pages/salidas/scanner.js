@@ -9,6 +9,7 @@ import {
   incrementStatistic,
 } from "../common/firestore.js";
 import { showToast } from "../common/utils/toast.js";
+import { playBeep, ensureAudioResume } from "../common/utils/audio.js";
 
 const html5QrCode = new Html5Qrcode("scanner-reader", false);
 
@@ -74,6 +75,14 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
     (p) => (p.id || p.code) === (product.id || String(product.code || ""))
   );
   const countMsg = added && added.quantity ? ` (x${added.quantity})` : "";
+  // Try to resume audio context and play a short beep for user feedback
+  try {
+    ensureAudioResume();
+    playBeep({ frequency: 1200, duration: 0.1, volume: 0.15, type: "sine" });
+  } catch (e) {
+    console.error("No se pudo reproducir el audio:", e);
+  }
+
   showToast(
     `Producto agregado: ${product.name}${countMsg}`.replace(/undefined/g, ""),
     "success"
