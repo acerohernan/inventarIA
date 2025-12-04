@@ -50,6 +50,16 @@ body {
     fill: white;
 }
 
+.nav-link.active-salidas {
+    background-color: red !important;
+    color: white;
+}
+
+.nav-link.active-entradas {
+    background-color: rgb(113, 177, 17) !important;
+    color: white;
+}
+
 .dashboard-sidebar-logo {
     height: 52px;
 }

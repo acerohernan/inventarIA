@@ -45,17 +45,6 @@ class SidebarMenu extends HTMLElement {
           </li>
           <li class="nav-item">
             <a
-              href="/pages/salidas/salidas.html"
-              class="nav-link py-3 border-bottom d-flex align-items-center justify-content-center justify-content-md-start px-3"
-              id="nav-link-salidas"
-              data-section="salidas"
-            >
-              <i class="bi bi-box-arrow-left fs-4"></i>
-              <span class="ms-2 d-none d-md-inline">Salidas</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a
               href="/pages/entradas/entradas.html"
               class="nav-link py-3 border-bottom d-flex align-items-center justify-content-center justify-content-md-start px-3"
               id="nav-link-entradas"
@@ -65,6 +54,18 @@ class SidebarMenu extends HTMLElement {
               <span class="ms-2 d-none d-md-inline">Entradas</span>
             </a>
           </li>
+          <li class="nav-item">
+            <a
+              href="/pages/salidas/salidas.html"
+              class="nav-link py-3 border-bottom d-flex align-items-center justify-content-center justify-content-md-start px-3"
+              id="nav-link-salidas"
+              data-section="salidas"
+            >
+              <i class="bi bi-box-arrow-left fs-4"></i>
+              <span class="ms-2 d-none d-md-inline">Salidas</span>
+            </a>
+          </li>
+          
         </ul>
         <div class="dropdown border-top">
           <a
@@ -104,9 +105,17 @@ class SidebarMenu extends HTMLElement {
       const section = link.dataset.section;
       // Verifica si la ruta contiene la carpeta
       if (currentPath.includes(`/pages/${section}/`)) {
-        link.classList.add("active"); // aplicar estilo sombreado
+        if (section === "salidas") {
+          link.classList.add("active-salidas");
+        } else if (section === "entradas") {
+          link.classList.add("active-entradas");
+        } else {
+          link.classList.add("active");
+        }
       } else {
         link.classList.remove("active");
+        link.classList.remove("active-salidas");
+        link.classList.remove("active-entradas");
       }
     });
 
